@@ -1,0 +1,51 @@
+package com.base.controllers;
+
+import com.base.dtos.UserDTO;
+import com.base.entities.UserEntity;
+import com.base.services.IUserService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+@RestController
+@RequestMapping("/users")
+@PreAuthorize("denyAll()")
+public class UserController  {
+    private final IUserService userService;
+
+    public UserController(IUserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAuthority('READ_ALL_USER')")
+    public ResponseEntity<List<UserEntity>> getAll() {
+        return ResponseEntity.ok(userService.getAll());
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('READ_USER')")
+    public UserEntity getById(@PathVariable("id") Long id) {
+        return userService.getById(id);
+    }
+
+    @PostMapping
+    @PreAuthorize("hasAuthority('CREATE_USER')")
+    public UserDTO save(@RequestBody UserDTO user) {
+        return userService.save(user);
+    }
+
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('UPDATE_USER')")
+    public UserEntity update(@PathVariable("id") Long id,@RequestBody UserEntity user) {
+        return userService.update(id, user);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('DELETE_USER')")
+    public boolean deleteById(Long id) {
+        return userService.deleteById(id);
+    }
+}
