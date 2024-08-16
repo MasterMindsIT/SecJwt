@@ -28,25 +28,31 @@ public class BaseApplication {
 		return args -> {
 			log.warn("Creating data in DB, permissions, roles and users");
 			/* Create PERMISSIONS */
-			PermissionEntity createPermission = PermissionEntity.builder()
+			PermissionEntity createTest = PermissionEntity.builder()
 					.name("CREATE")
 					.build();
 
-			PermissionEntity readPermission = PermissionEntity.builder()
+			PermissionEntity readTest = PermissionEntity.builder()
 					.name("READ")
 					.build();
 
-			PermissionEntity updatePermission = PermissionEntity.builder()
+			PermissionEntity updateTest = PermissionEntity.builder()
 					.name("UPDATE")
 					.build();
 
-			PermissionEntity deletePermission = PermissionEntity.builder()
+			PermissionEntity deleteTest = PermissionEntity.builder()
 					.name("DELETE")
 					.build();
 
-			PermissionEntity allPermission = PermissionEntity.builder()
+			PermissionEntity allTest = PermissionEntity.builder()
 					.name("READ_ALL")
 					.build();
+
+			//
+			PermissionEntity allPermission = PermissionEntity.builder()
+					.name("READ_ALL_PERMISSION")
+					.build();
+			//
 			PermissionEntity createUser = PermissionEntity.builder()
 					.name("CREATE_USER")
 					.build();
@@ -66,6 +72,7 @@ public class BaseApplication {
 			PermissionEntity allUser = PermissionEntity.builder()
 					.name("READ_ALL_USER")
 					.build();
+			//
 			PermissionEntity createProject = PermissionEntity.builder()
 					.name("CREATE_PROJECT")
 					.build();
@@ -85,7 +92,7 @@ public class BaseApplication {
 			PermissionEntity allProject = PermissionEntity.builder()
 					.name("READ_ALL_PROJECT")
 					.build();
-
+			//
 			PermissionEntity createRole = PermissionEntity.builder()
 					.name("CREATE_ROLE")
 					.build();
@@ -110,7 +117,8 @@ public class BaseApplication {
 			RoleEntity roleAdmin = RoleEntity.builder()
 					.name("ADMIN")
 					.permissionList(Set.of(
-							createPermission, readPermission, updatePermission, deletePermission, allPermission,
+							createTest, readTest, updateTest, deleteTest, allTest,
+							allPermission,
 							updateUser, createUser, readUser, allUser, deleteUser,
 							updateProject, createProject, readProject,allProject, deleteProject,
 							updateRole, createRole, readRole, allRole, deleteRole))
@@ -118,7 +126,7 @@ public class BaseApplication {
 
 			RoleEntity roleUser = RoleEntity.builder()
 					.name("USER")
-					.permissionList(Set.of(createPermission, readPermission, updatePermission, deletePermission))
+					.permissionList(Set.of(createTest, readTest, updateTest, deleteTest, allTest))
 					.build();
 
 

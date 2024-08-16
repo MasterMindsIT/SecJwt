@@ -2,6 +2,7 @@ package com.base.controllers;
 
 import com.base.entities.ProjectEntity;
 import com.base.services.IProjectService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,10 +11,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/projects")
 @PreAuthorize("denyAll()")
+@Slf4j
 public class ProjectController{
     private final IProjectService projectService;
 
     public ProjectController(IProjectService projectService) {
+        log.info("Iniciando restcontroller: " + this.getClass().getName());
         this.projectService = projectService;
     }
 

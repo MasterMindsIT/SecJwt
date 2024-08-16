@@ -1,7 +1,10 @@
 package com.base.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Set;
 
 @Setter
 @Getter
@@ -18,5 +21,9 @@ public class PermissionEntity {
 
     @Column(unique = true, nullable = false, updatable = false)
     private String name;
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permissionList")
+    @JsonIgnore
+    private Set<RoleEntity> roles;
 }
 

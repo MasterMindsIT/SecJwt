@@ -6,6 +6,8 @@ import com.base.entities.UserEntity;
 import com.base.repositories.RoleRepository;
 import com.base.repositories.UserRepository;
 import com.base.services.IUserService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,13 +17,14 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements IUserService {
-
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
     public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository) {
+        log.info("Iniciando servicio: " + this.getClass().getName());
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -38,8 +41,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public UserDTO save(UserDTO userDto) {
-        System.out.println("Desde service rgv "+userDto);
+    public UserEntity save(UserDTO userDto) {
         List<String> rolesRequest = userDto.roleRequest().roleListName();
         Set<RoleEntity> roleEntityList = new HashSet<>(roleRepository.findRoleEntitiesByNameIn(rolesRequest));
         if (roleEntityList.isEmpty()) {
@@ -55,17 +57,22 @@ public class UserServiceImpl implements IUserService {
                 .accountNoExpired(userDto.accountNoExpired())
                 .roles(roleEntityList)
                 .build();
-        System.out.println(user.toString());
-                userRepository.save(user);
-                return userDto;
+        return userRepository.save(user);
+
     }
 
     @Override
-    public UserEntity update(Long id, UserEntity user) {
+    public UserEntity update(Long id, UserDTO userDto) {
+        List<String> rolesRequest = userDto.roleRequest().roleListName();
+        Set<RoleEntity> roleEntityList = new HashSet<>(roleRepository.findRoleEntitiesByNameIn(rolesRequest));
         UserEntity userEdit = getById(id);
-        userEdit.setEmail(userEdit.getEmail());
-        userEdit.setPassword(passwordEncoder.encode(user.getPassword()));
-        //Los demas campos quedan en true por defecto ed los valores anteriores
+        userEdit.setEmail(userDto.email());
+        userEdit.setPassword(passwordEncoder.encode(userDto.password()));
+        userEdit.setRoles(roleEntityList);
+        userEdit.setEnabled(userDto.isEnabled());
+        userEdit.setCredentialNoExpired(userDto.credentialNoExpired());
+        userEdit.setAccountNoExpired(userDto.accountNoExpired());
+        userEdit.setAccountNoLocked(userDto.accountNoLocked());
         return userRepository.save(userEdit);
     }
 
@@ -73,7 +80,12 @@ public class UserServiceImpl implements IUserService {
     public boolean deleteById(Long id)  {
         boolean exist = userRepository.existsById(id);
         if(exist){
-            userRepository.deleteById(id);
+            UserEntity deleteUser = getById(id);
+            deleteUser.setAccountNoLocked(false);
+            deleteUser.setAccountNoExpired(false);
+            deleteUser.setCredentialNoExpired(false);
+            deleteUser.setEnabled(false);
+            userRepository.save(deleteUser);
         }
         return exist;
     }

@@ -8,6 +8,7 @@ import com.base.entities.RoleEntity;
 import com.base.repositories.RoleRepository;
 import com.base.repositories.UserRepository;
 import com.base.security.utils.JwtUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
+@Slf4j
 public class UserDetailServiceImpl implements UserDetailsService {
 
 
@@ -39,6 +41,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     private final RoleRepository roleRepository;
 
     public UserDetailServiceImpl(JwtUtils jwtUtils, PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository) {
+        log.info("Iniciando servicio: " + this.getClass().getName());
         this.jwtUtils = jwtUtils;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;

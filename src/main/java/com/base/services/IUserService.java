@@ -8,7 +8,7 @@ import java.util.List;
 public interface IUserService {
    List<UserEntity> getAll();
    UserEntity getById(Long id);
-   UserDTO save(UserDTO user);
-   UserEntity update(Long id, UserEntity user);
+   UserEntity save(UserDTO user);
+   UserEntity update(Long id, UserDTO user);
    boolean deleteById(Long id);
 }
